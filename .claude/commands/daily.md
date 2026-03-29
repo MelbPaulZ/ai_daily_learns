@@ -6,7 +6,7 @@
 
 ## Step 1：确定今日日期
 
-获取当前日期，格式 YYYY-MM-DD，以及年份和月份（英文），用于后续搜索词。
+获取当前日期，格式 YYYY-MM-DD，以及年份和月份（英文），用于后续搜索词。（使用系统上下文中的当前日期，无需额外工具调用）
 
 ---
 
@@ -15,7 +15,7 @@
 依次搜索以下 6 个来源，每组搜索词中包含当前年月，确保获取最新内容。搜索时使用英文关键词：
 
 1. `Anthropic Claude {YEAR} {MONTH} new model features announcement`
-2. `OpenAI GPT o-series {YEAR} {MONTH} new features release update`
+2. `OpenAI {YEAR} {MONTH} new model release update`
 3. `Google Gemini {YEAR} {MONTH} new update release announcement`
 4. `xAI Grok {YEAR} {MONTH} new features update`
 5. `Qwen Alibaba {YEAR} {MONTH} new model release update`
@@ -35,8 +35,7 @@
 | 📚 值得了解 | 新功能上线、新产品发布、重要更新，但不紧急 |
 | 👀 留意即可 | 小版本更新、次要公告、性能小幅优化 |
 
-若某来源当天无新动态，在对应位置注明"今日无重要更新"。
-若搜索结果整体较少，降低过滤标准，确保 📚 栏至少有 2 条内容。
+若某来源当天无新动态，跳过该来源，不在清单中显示。若搜索结果整体较少，降低过滤标准，确保 📚 栏至少有 2 条内容。
 
 ---
 
@@ -74,6 +73,7 @@
 
 **5a. 写入当日摘要**
 
+若 `logs/` 目录不存在，先创建该目录。
 将 Step 4 生成的完整内容写入 `logs/{YYYY-MM-DD}.md`。
 若文件已存在，覆盖（以本次运行为准）。
 
@@ -95,7 +95,8 @@
 | [{YYYY-MM-DD}]({YYYY-MM-DD}.md) | {🔥栏第1条标题（不含公司名前缀）} |
 ```
 
-- 若已存在，在表格 `| 日期 | 亮点 |` 和 `|------|------|` 两行之后、现有数据之前，插入今日新行：
+- 若已存在，找到 `|------|------|` 这一行，在它的紧接下一行插入今日新行（在任何现有 `|` 行之前）。
+插入前，先检查表格中是否已有 `{YYYY-MM-DD}` 的行；若已存在，则替换该行而非新增。
 
 ```
 | [{YYYY-MM-DD}]({YYYY-MM-DD}.md) | {🔥栏第1条标题（不含公司名前缀）} |
